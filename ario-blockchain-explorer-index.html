@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#070711">
+<title>ARIO | Blockchain Explorer</title>
+<style>
+:root{--bg:#070711;--panel:rgba(20,18,40,.9);--purple:#a970ff;--blue:#489dff;--text:#f4f0ff;--muted:#9a96b5;--line:rgba(169,112,255,.18)}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:Arial,system-ui,sans-serif;overflow-x:hidden}
+#network{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}.site{position:relative;z-index:1;min-height:100vh}
+header{height:76px;padding:0 7%;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#070711aa;backdrop-filter:blur(14px)}
+.logo{font-weight:900;font-size:22px;letter-spacing:5px;color:var(--purple);text-shadow:0 0 22px #a970ff66}.badge{font-size:10px;letter-spacing:2px;color:#6fffd0}.badge:before{content:"●";margin-right:8px}
+main{width:min(1120px,92%);margin:auto}.hero{text-align:center;padding:76px 0 38px}.eyebrow{font-size:10px;letter-spacing:3px;color:#9acbff;margin-bottom:18px}
+h1{font-size:clamp(34px,6vw,58px);letter-spacing:-2px;line-height:1.1;margin:0;background:linear-gradient(100deg,#fff 10%,#bba4ff 55%,#61b8ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.subtitle{max-width:560px;margin:18px auto 26px;color:var(--muted);font-size:14px;line-height:1.8}
+.search{max-width:680px;margin:auto;display:flex;gap:8px;padding:6px;border:1px solid #a970ff44;border-radius:15px;background:#110d20e8}
+input{min-width:0;flex:1;background:transparent;border:0;outline:0;padding:12px 14px;color:white;font-size:14px}input::placeholder{color:#77718e}
+button{border:0;border-radius:10px;padding:0 20px;color:white;font-weight:700;background:linear-gradient(110deg,#9852f4,#579dff);cursor:pointer;min-height:44px}button:disabled{opacity:.65}
+.note{font-size:10px;letter-spacing:.8px;color:var(--muted);margin-top:10px}.result{display:none;text-align:left;max-width:680px;margin:14px auto 0;padding:17px 19px;border:1px solid var(--line);border-radius:14px;background:#141228ee;overflow-wrap:anywhere;line-height:1.8;font-size:13px}.result strong{color:#c5a6ff}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0 42px}.card{padding:22px 20px;border:1px solid #a970ff22;border-radius:15px;background:var(--panel)}
+.label{font-size:9px;letter-spacing:2px;color:var(--muted);margin-bottom:10px}.value{font-size:20px;font-weight:650;color:#c9adff;overflow-wrap:anywhere}
+.section-title{font-size:14px;margin:0 0 16px;font-weight:650}.section-title:before{content:"◇";color:#c9adff;margin-right:8px}
+.block-list{display:grid;gap:9px;margin-bottom:42px}.block-row{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:15px 17px;background:var(--panel);border:1px solid #a970ff22;border-radius:12px;font-size:12px}.block-row a{color:#c9adff;text-decoration:none}.block-row span{color:var(--muted)}
+.status{margin-top:12px;color:var(--muted);font-size:11px;line-height:1.7}footer{text-align:center;border-top:1px solid #a970ff1a;padding:28px 12px 36px;color:#77718e;font-size:11px;line-height:1.9}footer strong{color:#bda0ff}
+@media(max-width:650px){header{height:62px;padding:0 5%}.hero{padding:58px 0 30px}.cards{grid-template-columns:1fr;gap:10px;margin:22px 0 34px}.card{padding:17px}.value{font-size:18px}.search{gap:4px}button{padding:0 13px;font-size:12px}.subtitle{font-size:13px}}
+</style>
+</head>
+<body>
+<canvas id="network" aria-hidden="true"></canvas>
+<div class="site">
+<header><div class="logo">ARIO</div><div class="badge">ETHEREUM MAINNET</div></header>
+<main>
+<section class="hero">
+<div class="eyebrow">BUILD. INNOVATE. DECENTRALIZE.</div>
+<h1>Explore the Blockchain</h1>
+<p class="subtitle">Discover real Ethereum blocks and transactions through a futuristic Web3 explorer built by ARIO.</p>
+<form class="search" id="searchForm"><input id="searchInput" autocomplete="off" spellcheck="false" placeholder="Enter a block number or transaction hash..." aria-label="Block number or transaction hash"><button id="searchButton" type="submit">Explore ↗</button></form>
+<div class="note">CONNECTED TO PUBLIC ETHEREUM RPC · NO WALLET REQUIRED</div>
+<div class="result" id="result" role="status" aria-live="polite"></div>
+</section>
+<section class="cards">
+<div class="card"><div class="label">NETWORK STATUS</div><div class="value" id="networkStatus">Connecting…</div></div>
+<div class="card"><div class="label">LATEST BLOCK</div><div class="value" id="latestBlock">Loading…</div></div>
+<div class="card"><div class="label">LATEST BLOCK TXS</div><div class="value" id="latestTxs">—</div></div>
+</section>
+<section><h2 class="section-title">Latest Ethereum Blocks</h2><div class="block-list" id="blockList"><div class="block-row">Loading latest Ethereum blocks…</div></div></section>
+<div class="status" id="refreshStatus">Live data comes from a public Ethereum RPC endpoint. Public endpoints can occasionally be rate-limited or unavailable.</div>
+</main>
+<footer><strong>ARIO</strong> · BUILD. INNOVATE. DECENTRALIZE.<br>Live Ethereum data · An educational blockchain explorer concept.</footer>
+</div>
+<script>
+const RPC_URL="https://ethereum-rpc.publicnode.com";
+const resultBox=document.getElementById("result"), searchInput=document.getElementById("searchInput"), searchButton=document.getElementById("searchButton"), searchForm=document.getElementById("searchForm");
+async function rpc(method,params=[]){
+ const response=await fetch(RPC_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",method,params,id:1})});
+ if(!response.ok)throw new Error("RPC request failed ("+response.status+")");
+ const data=await response.json();if(data.error)throw new Error(data.error.message||"RPC returned an error");return data.result;
+}
+function showError(message){resultBox.style.display="block";resultBox.textContent=message;}
+async function loadLatestBlocks(){
+ try{
+  const latest=Number(BigInt(await rpc("eth_blockNumber")));
+  document.getElementById("networkStatus").textContent="Live · Ethereum";
+  document.getElementById("latestBlock").textContent=latest.toLocaleString("en-US");
+  const blocks=await Promise.all([0,1,2].map(n=>rpc("eth_getBlockByNumber",["0x"+(latest-n).toString(16),false])));
+  document.getElementById("latestTxs").textContent=blocks[0].transactions.length.toLocaleString("en-US");
+  document.getElementById("blockList").innerHTML=blocks.map(b=>'<div class="block-row"><a href="#" data-block="'+Number(BigInt(b.number))+'">Block #'+Number(BigInt(b.number)).toLocaleString("en-US")+'</a><span>'+b.transactions.length.toLocaleString("en-US")+' transactions</span><span>'+new Date(Number(BigInt(b.timestamp))*1000).toLocaleString()+'</span></div>').join("");
+  document.querySelectorAll("[data-block]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();searchInput.value=a.dataset.block;searchForm.requestSubmit();}));
+  document.getElementById("refreshStatus").textContent="Last updated: "+new Date().toLocaleTimeString()+". Data fetched from Ethereum Mainnet.";
+ }catch(e){
+  document.getElementById("networkStatus").textContent="Unavailable";document.getElementById("latestBlock").textContent="—";document.getElementById("latestTxs").textContent="—";
+  document.getElementById("blockList").innerHTML='<div class="block-row">Could not load live blocks. Refresh or try again later.</div>';
+  document.getElementById("refreshStatus").textContent="Connection issue: "+e.message;
+ }
+}
+searchForm.addEventListener("submit",async e=>{
+ e.preventDefault();const q=searchInput.value.trim();if(!q){showError("Enter an Ethereum block number or transaction hash.");return;}
+ searchButton.disabled=true;searchButton.textContent="Searching…";resultBox.style.display="block";resultBox.textContent="Searching Ethereum Mainnet…";
+ try{
+  if(/^\d+$/.test(q)){
+   const b=await rpc("eth_getBlockByNumber",["0x"+BigInt(q).toString(16),true]);if(!b)throw new Error("Block not found. Check the number.");
+   resultBox.innerHTML="<strong>Ethereum Block #"+Number(BigInt(b.number)).toLocaleString("en-US")+"</strong><br>Timestamp: "+new Date(Number(BigInt(b.timestamp))*1000).toLocaleString()+"<br>Transactions: "+b.transactions.length.toLocaleString("en-US")+"<br>Gas used: "+BigInt(b.gasUsed).toLocaleString("en-US")+"<br>Gas limit: "+BigInt(b.gasLimit).toLocaleString("en-US")+"<br>Block hash: "+b.hash+"<br>Parent hash: "+b.parentHash;
+  }else if(/^0x[a-fA-F0-9]{64}$/.test(q)){
+   const tx=await rpc("eth_getTransactionByHash",[q]);if(!tx)throw new Error("Transaction not found. Check the hash.");
+   const receipt=await rpc("eth_getTransactionReceipt",[q]);const block=tx.blockNumber?Number(BigInt(tx.blockNumber)).toLocaleString("en-US"):"Pending";
+   resultBox.innerHTML="<strong>Ethereum Transaction</strong><br>Hash: "+tx.hash+"<br>Status: "+(receipt?(receipt.status==="0x1"?"Success":"Failed"):"Pending")+"<br>Block: "+block+"<br>From: "+tx.from+"<br>To: "+(tx.to||"Contract creation")+"<br>Value: "+(Number(BigInt(tx.value))/1e18).toFixed(8)+" ETH<br>Gas limit: "+BigInt(tx.gas).toLocaleString("en-US");
+  }else throw new Error("Enter a block number or a 66-character transaction hash starting with 0x.");
+ }catch(err){showError("Search failed: "+err.message+" Try again later if the public RPC is unavailable.");}
+ finally{searchButton.disabled=false;searchButton.textContent="Explore ↗";}
+});
+loadLatestBlocks();setInterval(loadLatestBlocks,60000);
+(()=>{
+ const c=document.getElementById("network"),ctx=c.getContext("2d");let pts=[];
+ function resize(){c.width=innerWidth*devicePixelRatio;c.height=innerHeight*devicePixelRatio;c.style.width=innerWidth+"px";c.style.height=innerHeight+"px";ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);pts=Array.from({length:Math.min(75,Math.floor(innerWidth/10))},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.22,r:Math.random()*1.5+.5}));}
+ function draw(){ctx.clearRect(0,0,innerWidth,innerHeight);for(let i=0;i<pts.length;i++){let p=pts[i];p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>innerWidth)p.vx*=-1;if(p.y<0||p.y>innerHeight)p.vy*=-1;for(let j=i+1;j<pts.length;j++){let q=pts[j],d=Math.hypot(p.x-q.x,p.y-q.y);if(d<125){ctx.strokeStyle="rgba(151,99,255,"+((1-d/125)*.18)+")";ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke();}}ctx.fillStyle="#ad79ff";ctx.shadowColor="#8d55ff";ctx.shadowBlur=8;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;}requestAnimationFrame(draw);}
+ addEventListener("resize",resize);resize();draw();
+})();
+</script>
+</body>
+</html>
