@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARIO | Blockchain Explorer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #080812;
+            color: #f5f3ff;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+        }
+
+        header {
+            padding: 24px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #29203f;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 5px;
+            color: #b78aff;
+        }
+
+        .status {
+            color: #7fffc1;
+            font-size: 12px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 75px 20px 50px;
+        }
+
+        .hero h1 {
+            font-size: clamp(32px, 6vw, 58px);
+            margin-bottom: 18px;
+        }
+
+        .hero h1 span {
+            color: #b78aff;
+        }
+
+        .hero p {
+            color: #aaa5bd;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .search {
+            display: flex;
+            max-width: 650px;
+            margin: auto;
+            padding: 6px;
+            border: 1px solid #7848b8;
+            border-radius: 12px;
+            background: #12101f;
+            box-shadow: 0 0 30px #8b5cf633;
+        }
+
+        .search input {
+            flex: 1;
+            min-width: 0;
+            padding: 14px;
+            color: white;
+            background: transparent;
+            border: none;
+            outline: none;
+        }
+
+        .search button {
+            background: #9b63f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .notice {
+            color: #c8b5ef;
+            font-size: 12px;
+            margin-top: 14px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            max-width: 1000px;
+            margin: 20px auto 55px;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: linear-gradient(145deg, #19132a, #100f1c);
+            border: 1px solid #302044;
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .card p {
+            color: #aaa5bd;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .card h2 {
+            color: #c49aff;
+            font-size: 25px;
+        }
+
+        .section {
+            max-width: 1000px;
+            margin: auto;
+            padding: 0 20px 60px;
+        }
+
+        .section h2 {
+            margin-bottom: 20px;
+        }
+
+        .block {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 18px;
+            margin-bottom: 10px;
+            background: #12101f;
+            border: 1px solid #29203f;
+            border-radius: 10px;
+            font-size: 13px;
+        }
+
+        .block strong {
+            color: #c49aff;
+        }
+
+        footer {
+            text-align: center;
+            padding: 28px 15px;
+            color: #888198;
+            border-top: 1px solid #29203f;
+            font-size: 12px;
+            line-height: 2;
+        }
+
+        @media (max-width: 600px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding-top: 55px;
+            }
+
+            .block {
+                flex-direction: column;
+                overflow-wrap: anywhere;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">ARIO</div>
+        <div class="status">● EXPLORER DEMO</div>
+    </header>
+
+    <section class="hero">
+        <h1>Explore the <span>Blockchain</span></h1>
+        <p>
+            Discover blocks, transactions, and the technology<br>
+            powering the decentralized future.
+        </p>
+
+        <form class="search" id="searchForm">
+            <input
+                id="searchInput"
+                type="text"
+                placeholder="Search demo blocks or transactions..."
+                aria-label="Search demo data"
+            >
+            <button type="submit">Explore</button>
+        </form>
+
+        <div class="notice">
+            Demo interface · Sample data only · Not connected to a live blockchain
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="card">
+            <p>NETWORK STATUS</p>
+            <h2>Demo Mode</h2>
+        </div>
+
+        <div class="card">
+            <p>SAMPLE BLOCKS</p>
+            <h2>3</h2>
+        </div>
+
+        <div class="card">
+            <p>SAMPLE TRANSACTIONS</p>
+            <h2>1,284</h2>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>◈ Latest Demo Blocks</h2>
+
+        <div id="blocks">
+            <div class="block">
+                <strong>Block #204851</strong>
+                <span>12 transactions</span>
+                <span>ARIO Demo Network</span>
+            </div>
+
+            <div class="block">
+                <strong>Block #204850</strong>
+                <span>8 transactions</span>
+                <span>ARIO Demo Network</span>
+            </div>
+
+            <div class="block">
+                <strong>Block #204849</strong>
+                <span>15 transactions</span>
+                <span>ARIO Demo Network</span>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <strong>ARIO</strong> · BUILD. INNOVATE. DECENTRALIZE.<br>
+        An educational blockchain explorer concept.<br>
+        © 2026 ARIO
+    </footer>
+
+    <script>
+        const form = document.getElementById("searchForm");
+        const input = document.getElementById("searchInput");
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const query = input.value.trim();
+
+            if (!query) {
+                alert("Please enter a block number or transaction ID.");
+                return;
+            }
+
+            alert(
+                "ARIO Explorer Demo\n\n" +
+                "Search: " + query +
+                "\n\nThis is a visual demo. Live blockchain search is not connected yet."
+            );
+        });
+    </script>
+
+</body>
+</html>
