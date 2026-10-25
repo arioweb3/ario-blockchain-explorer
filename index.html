@@ -1,275 +1,500 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARIO | Blockchain Explorer</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#070711">
+<title>ARIO | Blockchain Explorer</title>
 
-        body {
-            background: #080812;
-            color: #f5f3ff;
-            font-family: Arial, sans-serif;
-            min-height: 100vh;
-        }
+<style>
+:root {
+  --bg: #070711;
+  --panel: rgba(20, 18, 40, .78);
+  --purple: #a970ff;
+  --blue: #48d9ff;
+  --text: #f4f0ff;
+  --muted: #9a96b5;
+}
 
-        header {
-            padding: 24px 8%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #29203f;
-        }
+* {
+  box-sizing: border-box;
+}
 
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            letter-spacing: 5px;
-            color: #b78aff;
-        }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+}
 
-        .status {
-            color: #7fffc1;
-            font-size: 12px;
-        }
+#network {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
 
-        .hero {
-            text-align: center;
-            padding: 75px 20px 50px;
-        }
+.site {
+  position: relative;
+  z-index: 1;
+}
 
-        .hero h1 {
-            font-size: clamp(32px, 6vw, 58px);
-            margin-bottom: 18px;
-        }
+header {
+  height: 76px;
+  padding: 0 7%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(169,112,255,.2);
+  background: rgba(7,7,17,.65);
+  backdrop-filter: blur(14px);
+}
 
-        .hero h1 span {
-            color: #b78aff;
-        }
+.logo {
+  font-size: 27px;
+  font-weight: 900;
+  letter-spacing: 5px;
+  color: var(--purple);
+  text-shadow: 0 0 22px rgba(169,112,255,.65);
+}
 
-        .hero p {
-            color: #aaa5bd;
-            line-height: 1.8;
-            margin-bottom: 30px;
-        }
+.badge {
+  color: #6fffd0;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
 
-        .search {
-            display: flex;
-            max-width: 650px;
-            margin: auto;
-            padding: 6px;
-            border: 1px solid #7848b8;
-            border-radius: 12px;
-            background: #12101f;
-            box-shadow: 0 0 30px #8b5cf633;
-        }
+.hero {
+  text-align: center;
+  padding: 90px 18px 55px;
+}
 
-        .search input {
-            flex: 1;
-            min-width: 0;
-            padding: 14px;
-            color: white;
-            background: transparent;
-            border: none;
-            outline: none;
-        }
+.eyebrow {
+  color: var(--blue);
+  font-size: 11px;
+  letter-spacing: 4px;
+  margin-bottom: 20px;
+}
 
-        .search button {
-            background: #9b63f6;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 18px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+h1 {
+  font-size: clamp(36px, 7vw, 68px);
+  line-height: 1.12;
+  margin: 0 auto 20px;
+  letter-spacing: -2px;
+}
 
-        .notice {
-            color: #c8b5ef;
-            font-size: 12px;
-            margin-top: 14px;
-        }
+.gradient {
+  background: linear-gradient(100deg, #b78aff, #59e5ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
 
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-            max-width: 1000px;
-            margin: 20px auto 55px;
-            padding: 0 20px;
-        }
+.subtitle {
+  color: var(--muted);
+  max-width: 540px;
+  margin: 0 auto;
+  line-height: 1.8;
+  font-size: 14px;
+}
 
-        .card {
-            background: linear-gradient(145deg, #19132a, #100f1c);
-            border: 1px solid #302044;
-            border-radius: 16px;
-            padding: 25px;
-        }
+.search {
+  display: flex;
+  max-width: 650px;
+  margin: 35px auto 12px;
+  padding: 6px;
+  border: 1px solid rgba(169,112,255,.55);
+  border-radius: 15px;
+  background: rgba(17,14,33,.85);
+  box-shadow: 0 0 35px rgba(135,70,255,.13);
+}
 
-        .card p {
-            color: #aaa5bd;
-            font-size: 13px;
-            margin-bottom: 15px;
-        }
+.search input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  padding: 13px;
+  color: white;
+  font-size: 13px;
+}
 
-        .card h2 {
-            color: #c49aff;
-            font-size: 25px;
-        }
+button {
+  border: 0;
+  border-radius: 10px;
+  padding: 13px 22px;
+  color: white;
+  font-weight: bold;
+  background: linear-gradient(110deg, #8a48ee, #5b9cff);
+  cursor: pointer;
+}
 
-        .section {
-            max-width: 1000px;
-            margin: auto;
-            padding: 0 20px 60px;
-        }
+button:active {
+  transform: scale(.97);
+}
 
-        .section h2 {
-            margin-bottom: 20px;
-        }
+.note {
+  color: #77718f;
+  font-size: 10px;
+}
 
-        .block {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            padding: 18px;
-            margin-bottom: 10px;
-            background: #12101f;
-            border: 1px solid #29203f;
-            border-radius: 10px;
-            font-size: 13px;
-        }
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  max-width: 1100px;
+  margin: 30px auto 55px;
+  padding: 0 20px;
+}
 
-        .block strong {
-            color: #c49aff;
-        }
+.card {
+  padding: 23px;
+  border: 1px solid rgba(169,112,255,.17);
+  border-radius: 17px;
+  background: var(--panel);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 10px 35px rgba(0,0,0,.18);
+  transition: transform .25s, border-color .25s;
+}
 
-        footer {
-            text-align: center;
-            padding: 28px 15px;
-            color: #888198;
-            border-top: 1px solid #29203f;
-            font-size: 12px;
-            line-height: 2;
-        }
+.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(72,217,255,.55);
+}
 
-        @media (max-width: 600px) {
-            .stats {
-                grid-template-columns: 1fr;
-            }
+.label {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+}
 
-            .hero {
-                padding-top: 55px;
-            }
+.value {
+  color: #c9a4ff;
+  font-size: 25px;
+  font-weight: bold;
+  margin-top: 13px;
+}
 
-            .block {
-                flex-direction: column;
-                overflow-wrap: anywhere;
-            }
-        }
-    </style>
+.section {
+  max-width: 1100px;
+  margin: 0 auto 55px;
+  padding: 0 20px;
+}
+
+.section h2 {
+  font-size: 19px;
+  margin-bottom: 20px;
+}
+
+.block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+  padding: 18px;
+  border-radius: 12px;
+  background: rgba(20,18,40,.8);
+  border: 1px solid rgba(169,112,255,.14);
+  font-size: 12px;
+}
+
+.block span:first-child {
+  color: #c39bff;
+}
+
+.block span:last-child {
+  color: var(--muted);
+}
+
+#result {
+  display: none;
+  max-width: 650px;
+  margin: 18px auto 0;
+  padding: 18px;
+  text-align: left;
+  border: 1px solid rgba(72,217,255,.4);
+  border-radius: 12px;
+  background: rgba(13,20,39,.94);
+  overflow-wrap: anywhere;
+  line-height: 1.8;
+  font-size: 13px;
+}
+
+footer {
+  text-align: center;
+  padding: 30px 15px 40px;
+  border-top: 1px solid rgba(169,112,255,.14);
+  color: #817b9b;
+  font-size: 11px;
+  line-height: 2;
+}
+
+@media (max-width: 600px) {
+  header {
+    height: 65px;
+    padding: 0 20px;
+  }
+
+  .logo {
+    font-size: 23px;
+  }
+
+  .hero {
+    padding-top: 70px;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+    margin-top: 15px;
+  }
+
+  .card {
+    padding: 19px;
+  }
+
+  .block {
+    padding: 14px 10px;
+    font-size: 10px;
+  }
+
+  .search button {
+    padding: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
+</style>
 </head>
+
 <body>
+<canvas id="network" aria-hidden="true"></canvas>
 
-    <header>
-        <div class="logo">ARIO</div>
-        <div class="status">● EXPLORER DEMO</div>
-    </header>
+<div class="site">
+<header>
+  <div class="logo">ARIO</div>
+  <div class="badge">● EXPLORER DEMO</div>
+</header>
 
-    <section class="hero">
-        <h1>Explore the <span>Blockchain</span></h1>
-        <p>
-            Discover blocks, transactions, and the technology<br>
-            powering the decentralized future.
-        </p>
+<main>
+<section class="hero">
+  <div class="eyebrow">BUILD. INNOVATE. DECENTRALIZE.</div>
 
-        <form class="search" id="searchForm">
-            <input
-                id="searchInput"
-                type="text"
-                placeholder="Search demo blocks or transactions..."
-                aria-label="Search demo data"
-            >
-            <button type="submit">Explore</button>
-        </form>
+  <h1>Explore the <span class="gradient">Blockchain</span></h1>
 
-        <div class="notice">
-            Demo interface · Sample data only · Not connected to a live blockchain
-        </div>
-    </section>
+  <p class="subtitle">
+    Discover blocks, explore transactions, and experience
+    the technology powering a decentralized future.
+  </p>
 
-    <section class="stats">
-        <div class="card">
-            <p>NETWORK STATUS</p>
-            <h2>Demo Mode</h2>
-        </div>
+  <form class="search" id="searchForm">
+    <input id="searchInput"
+      aria-label="Search demo blocks or transactions"
+      placeholder="Search a demo block or transaction..."
+      autocomplete="off">
+    <button type="submit">Explore ↗</button>
+  </form>
 
-        <div class="card">
-            <p>SAMPLE BLOCKS</p>
-            <h2>3</h2>
-        </div>
+  <div class="note">
+    EDUCATIONAL DEMO · SAMPLE DATA · NOT CONNECTED TO A LIVE BLOCKCHAIN
+  </div>
 
-        <div class="card">
-            <p>SAMPLE TRANSACTIONS</p>
-            <h2>1,284</h2>
-        </div>
-    </section>
+  <div id="result" aria-live="polite"></div>
+</section>
 
-    <section class="section">
-        <h2>◈ Latest Demo Blocks</h2>
+<section class="stats">
+  <div class="card">
+    <div class="label">NETWORK STATUS</div>
+    <div class="value">Demo Mode</div>
+  </div>
 
-        <div id="blocks">
-            <div class="block">
-                <strong>Block #204851</strong>
-                <span>12 transactions</span>
-                <span>ARIO Demo Network</span>
-            </div>
+  <div class="card">
+    <div class="label">SAMPLE BLOCKS</div>
+    <div class="value">03</div>
+  </div>
 
-            <div class="block">
-                <strong>Block #204850</strong>
-                <span>8 transactions</span>
-                <span>ARIO Demo Network</span>
-            </div>
+  <div class="card">
+    <div class="label">SAMPLE TRANSACTIONS</div>
+    <div class="value">1,284</div>
+  </div>
+</section>
 
-            <div class="block">
-                <strong>Block #204849</strong>
-                <span>15 transactions</span>
-                <span>ARIO Demo Network</span>
-            </div>
-        </div>
-    </section>
+<section class="section">
+  <h2>◇ Latest Demo Blocks</h2>
 
-    <footer>
-        <strong>ARIO</strong> · BUILD. INNOVATE. DECENTRALIZE.<br>
-        An educational blockchain explorer concept.<br>
-        © 2026 ARIO
-    </footer>
+  <div class="block">
+    <span>Block #204851</span>
+    <span>12 transactions</span>
+    <span>ARIO Demo Network</span>
+  </div>
 
-    <script>
-        const form = document.getElementById("searchForm");
-        const input = document.getElementById("searchInput");
+  <div class="block">
+    <span>Block #204850</span>
+    <span>8 transactions</span>
+    <span>ARIO Demo Network</span>
+  </div>
 
-        form.addEventListener("submit", function(event) {
-            event.preventDefault();
+  <div class="block">
+    <span>Block #204849</span>
+    <span>15 transactions</span>
+    <span>ARIO Demo Network</span>
+  </div>
+</section>
+</main>
 
-            const query = input.value.trim();
+<footer>
+  <div>ARIO · BUILD. INNOVATE. DECENTRALIZE.</div>
+  <div>An educational blockchain explorer concept.</div>
+  <div>© 2026 ARIO · Demo data only</div>
+</footer>
+</div>
 
-            if (!query) {
-                alert("Please enter a block number or transaction ID.");
-                return;
-            }
+<script>
+/* Animated blockchain network background */
+(() => {
+  const canvas = document.getElementById("network");
+  const ctx = canvas.getContext("2d");
+  let width, height, points = [], animationId;
+  const spacing = 95;
 
-            alert(
-                "ARIO Explorer Demo\n\n" +
-                "Search: " + query +
-                "\n\nThis is a visual demo. Live blockchain search is not connected yet."
-            );
-        });
-    </script>
+  function resize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
 
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    canvas.style.width = width + "px";
+    canvas.style.height = height + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const count = Math.min(
+      100,
+      Math.max(25, Math.floor(width * height / 15000))
+    );
+
+    points = Array.from({ length: count }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - .5) * .35,
+      vy: (Math.random() - .5) * .35,
+      r: Math.random() * 1.8 + 1
+    }));
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, width, height);
+
+    const maxDistance = Math.min(spacing * 1.7, width * .28);
+
+    for (let i = 0; i < points.length; i++) {
+      const p = points[i];
+
+      p.x += p.vx;
+      p.y += p.vy;
+
+      if (p.x < 0 || p.x > width) p.vx *= -1;
+      if (p.y < 0 || p.y > height) p.vy *= -1;
+
+      for (let j = i + 1; j < points.length; j++) {
+        const q = points[j];
+        const dx = p.x - q.x;
+        const dy = p.y - q.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < maxDistance) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(q.x, q.y);
+          ctx.strokeStyle =
+            `rgba(145, 91, 255, ${.2 * (1 - distance / maxDistance)})`;
+          ctx.lineWidth = .7;
+          ctx.stroke();
+        }
+      }
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = "#a77aff";
+      ctx.shadowColor = "#8d55ff";
+      ctx.shadowBlur = 9;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    animationId = requestAnimationFrame(draw);
+  }
+
+  resize();
+  draw();
+
+  window.addEventListener("resize", resize);
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      cancelAnimationFrame(animationId);
+    } else {
+      cancelAnimationFrame(animationId);
+      draw();
+    }
+  });
+})();
+
+/* Interactive demo search */
+const demoItems = [
+  {
+    id: "204851",
+    type: "Block",
+    details: "12 sample transactions · ARIO Demo Network"
+  },
+  {
+    id: "204850",
+    type: "Block",
+    details: "8 sample transactions · ARIO Demo Network"
+  },
+  {
+    id: "204849",
+    type: "Block",
+    details: "15 sample transactions · ARIO Demo Network"
+  }
+];
+
+document.getElementById("searchForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const query = document.getElementById("searchInput")
+    .value.trim().replace(/^#/, "");
+
+  const result = document.getElementById("result");
+  result.style.display = "block";
+
+  if (!query) {
+    result.textContent = "Enter a demo block number, such as 204851.";
+    return;
+  }
+
+  const item = demoItems.find(entry => entry.id === query);
+
+  if (item) {
+    result.innerHTML =
+      "<strong>" + item.type + " #" + item.id + "</strong><br>" +
+      item.details +
+      "<br><span style='color:#9a96b5'>Sample data only — not live blockchain data.</span>";
+  } else {
+    result.textContent =
+      "No matching demo block found. Try 204851, 204850, or 204849.";
+  }
+});
+</script>
 </body>
 </html>
